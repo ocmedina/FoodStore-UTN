@@ -7,36 +7,30 @@ public abstract class Base {
     private boolean eliminado;
     private LocalDateTime createdAt;
 
-    // Constructor
     public Base() {
-        // Por defecto, cuando creamos un objeto, NO está eliminado
         this.eliminado = false;
-        // Se asigna automáticamente la fecha y hora exacta de creación
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters y Setters
-    public Long getId() {
-        return id;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public boolean isEliminado() { return eliminado; }
+    public void setEliminado(boolean eliminado) { this.eliminado = eliminado; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Base other = (Base) obj;
+        return id != null && id.equals(other.id);
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public boolean isEliminado() {
-        return eliminado;
-    }
-
-    public void setEliminado(boolean eliminado) {
-        this.eliminado = eliminado;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    @Override
+    public int hashCode() {
+        return (id != null) ? id.hashCode() : 0;
     }
 }

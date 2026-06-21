@@ -10,12 +10,10 @@ public class Usuario extends Base {
     private String contraseña;
     private Rol rol;
 
-    // Constructor vacío
     public Usuario() {
         super();
     }
 
-    // Constructor con parámetros
     public Usuario(String nombre, String apellido, String mail, String celular, String contraseña, Rol rol) {
         super();
         this.nombre = nombre;
@@ -26,56 +24,24 @@ public class Usuario extends Base {
         this.rol = rol;
     }
 
-    // Getters y Setters
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
 
-    public String getApellido() {
-        return apellido;
-    }
+    public String getMail() { return mail; }
+    public void setMail(String mail) { this.mail = mail; }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
+    public String getCelular() { return celular; }
+    public void setCelular(String celular) { this.celular = celular; }
 
-    public String getMail() {
-        return mail;
-    }
+    public String getContraseña() { return contraseña; }
+    public void setContraseña(String contraseña) { this.contraseña = contraseña; }
 
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
+    public Rol getRol() { return rol; }
+    public void setRol(Rol rol) { this.rol = rol; }
 
-    public String getCelular() {
-        return celular;
-    }
-
-    public void setCelular(String celular) {
-        this.celular = celular;
-    }
-
-    public String getContraseña() {
-        return contraseña;
-    }
-
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
-    }
-
-    public Rol getRol() {
-        return rol;
-    }
-
-    public void setRol(Rol rol) {
-        this.rol = rol;
-    }
-
-    // toString optimizado para el listado en consola (HU-USR-01)
     @Override
     public String toString() {
         return "Usuario [ID=" + getId() + "] - " + nombre + " " + apellido + " | Mail: " + mail + " | Rol: " + rol;

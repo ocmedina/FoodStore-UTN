@@ -11,14 +11,9 @@ public class Pedido extends Base implements Calculable {
     private Estado estado;
     private Double total;
     private FormaPago formaPago;
-
-    // Relación con Usuario (el dueño del pedido)
     private Usuario usuario;
-
-    // Composición 1:N con DetallePedido (Uso de Colecciones en memoria)
     private List<DetallePedido> detalles;
 
-    // Constructor vacío
     public Pedido() {
         super();
         this.fecha = LocalDate.now();
@@ -26,7 +21,6 @@ public class Pedido extends Base implements Calculable {
         this.detalles = new ArrayList<>();
     }
 
-    // Constructor principal
     public Pedido(Estado estado, FormaPago formaPago, Usuario usuario) {
         super();
         this.fecha = LocalDate.now();
@@ -37,16 +31,12 @@ public class Pedido extends Base implements Calculable {
         this.detalles = new ArrayList<>();
     }
 
-    // --- MÉTODOS PROPIOS EXIGIDOS POR EL UML ---
-
     public void addDetallePedido(int cantidad, Double subtotal, Producto producto) {
         DetallePedido nuevoDetalle = new DetallePedido(cantidad, producto);
-        // Podemos ignorar el parámetro 'subtotal' que viene en la firma del UML
-        // porque la clase DetallePedido ya lo calcula de forma segura en su constructor,
-        // pero respetamos la firma del método que pide el documento.
-        nuevoDetalle.setSubtotal(subtotal);
+        double subtotalCalculado = cantidad * producto.getPrecio();
+        nuevoDetalle.setSubtotal(subtotalCalculado);
         this.detalles.add(nuevoDetalle);
-        calcularTotal(); // Recalculamos el total del pedido cada vez que se agrega algo
+        calcularTotal();
     }
 
     public DetallePedido findeDetallePedidoByProducto(Producto producto) {
@@ -55,18 +45,16 @@ public class Pedido extends Base implements Calculable {
                 return detalle;
             }
         }
-        return null; // Si no lo encuentra, retorna null
+        return null;
     }
 
     public void deleteDetallePedidoByProducto(Producto producto) {
         DetallePedido detalleAEliminar = findeDetallePedidoByProducto(producto);
         if (detalleAEliminar != null) {
             detalles.remove(detalleAEliminar);
-            calcularTotal(); // Recalculamos el total al eliminar un detalle
+            calcularTotal();
         }
     }
-
-    // --- IMPLEMENTACIÓN DE LA INTERFAZ CALCULABLE ---
 
     @Override
     public void calcularTotal() {
@@ -76,8 +64,6 @@ public class Pedido extends Base implements Calculable {
         }
         this.total = sumaTotal;
     }
-
-    // --- GETTERS Y SETTERS ---
 
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
