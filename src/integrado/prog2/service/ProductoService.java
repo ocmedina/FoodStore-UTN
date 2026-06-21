@@ -99,4 +99,12 @@ public class ProductoService {
             throw new ValidacionException("Error de base de datos: " + e.getMessage());
         }
     }
+
+    public void descontarStock(Long id, int cantidad) throws ValidacionException {
+        try {
+            productoRepository.descontarStock(id, cantidad);
+        } catch (SQLException e) {
+            throw new ValidacionException("Error de base de datos: " + e.getMessage());
+        }
+    }
 }

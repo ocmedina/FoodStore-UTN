@@ -43,6 +43,16 @@ public class CategoriaRepository {
         return null;
     }
 
+    public Categoria findByNombreCualquiera(String nombre) throws SQLException {
+        String sql = "SELECT id, nombre, descripcion, eliminado, created_at FROM categorias WHERE LOWER(nombre) = LOWER(?)";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return mapear(rs);
+        }
+        return null;
+    }
+
     public boolean existeNombre(String nombre) throws SQLException {
         String sql = "SELECT COUNT(*) FROM categorias WHERE LOWER(nombre) = LOWER(?) AND eliminado = false";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -70,6 +80,15 @@ public class CategoriaRepository {
             ps.setString(1, categoria.getNombre());
             ps.setString(2, categoria.getDescripcion());
             ps.setLong(3, categoria.getId());
+            ps.executeUpdate();
+        }
+    }
+
+    public void reactivar(Long id, String descripcion) throws SQLException {
+        String sql = "UPDATE categorias SET eliminado = false, descripcion = ? WHERE id = ?";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setString(1, descripcion);
+            ps.setLong(2, id);
             ps.executeUpdate();
         }
     }

@@ -48,6 +48,16 @@ public class UsuarioRepository {
         return null;
     }
 
+    public Usuario findByMailCualquiera(String mail) throws SQLException {
+        String sql = "SELECT id, nombre, apellido, mail, celular, contrasena, rol, eliminado, created_at FROM usuarios WHERE LOWER(mail) = LOWER(?)";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setString(1, mail);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return mapear(rs);
+        }
+        return null;
+    }
+
     public void eliminar(Long id) throws SQLException {
         String sql = "UPDATE usuarios SET eliminado = true WHERE id = ?";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -87,6 +97,19 @@ public class UsuarioRepository {
             ps.setString(5, usuario.getContraseña());
             ps.setString(6, usuario.getRol().name());
             ps.setLong(7, usuario.getId());
+            ps.executeUpdate();
+        }
+    }
+
+    public void reactivar(Long id, String nombre, String apellido, String celular, String contrasena, Rol rol) throws SQLException {
+        String sql = "UPDATE usuarios SET eliminado = false, nombre = ?, apellido = ?, celular = ?, contrasena = ?, rol = ? WHERE id = ?";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            ps.setString(2, apellido);
+            ps.setString(3, celular);
+            ps.setString(4, contrasena);
+            ps.setString(5, rol.name());
+            ps.setLong(6, id);
             ps.executeUpdate();
         }
     }

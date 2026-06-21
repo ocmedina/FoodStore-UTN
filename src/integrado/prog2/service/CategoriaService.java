@@ -20,8 +20,16 @@ public class CategoriaService {
             throw new ValidacionException("El nombre de la categoría no puede estar vacío.");
         }
         try {
-            if (categoriaRepository.existeNombre(nombre)) {
-                throw new ValidacionException("Ya existe una categoría activa con el nombre: " + nombre);
+            Categoria existente = categoriaRepository.findByNombreCualquiera(nombre);
+            if (existente != null) {
+                if (!existente.isEliminado()) {
+                    throw new ValidacionException("Ya existe una categoría activa con el nombre: " + nombre);
+                } else {
+                    categoriaRepository.reactivar(existente.getId(), descripcion);
+                    existente.setEliminado(false);
+                    existente.setDescripcion(descripcion);
+                    return existente;
+                }
             }
             Categoria nueva = new Categoria(nombre, descripcion);
             return categoriaRepository.guardar(nueva);

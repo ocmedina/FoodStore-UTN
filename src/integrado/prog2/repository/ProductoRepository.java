@@ -82,6 +82,14 @@ public class ProductoRepository {
         }
     }
 
+    public void descontarStock(Long id, int cantidad) throws SQLException {
+        Producto prod = findById(id);
+        if (prod != null) {
+            int nuevoStock = prod.getStock() - cantidad;
+            actualizarStock(id, nuevoStock);
+        }
+    }
+
     public void eliminar(Long id) throws SQLException {
         String sql = "UPDATE productos SET eliminado = true WHERE id = ?";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {

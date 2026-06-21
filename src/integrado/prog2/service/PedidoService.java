@@ -3,6 +3,7 @@ package integrado.prog2.service;
 import integrado.prog2.entities.Pedido;
 import integrado.prog2.entities.Producto;
 import integrado.prog2.entities.Usuario;
+import integrado.prog2.entities.DetallePedido;
 import integrado.prog2.enums.Estado;
 import integrado.prog2.enums.FormaPago;
 import integrado.prog2.exception.ValidacionException;
@@ -38,17 +39,24 @@ public class PedidoService {
     }
 
     public void agregarDetalleAPedido(Pedido pedido, Long idProducto, int cantidad) throws ValidacionException {
-        if (cantidad <= 0) throw new ValidacionException("La cantidad debe ser mayor a 0.");
-
         Producto producto = productoService.buscarPorId(idProducto);
-
-        if (producto.getStock() < cantidad) {
-            throw new ValidacionException("Stock insuficiente para: " + producto.getNombre() +
-                    " (Disponible: " + producto.getStock() + ")");
+        
+        int cantidadTotalEnPedido = cantidad;
+        DetallePedido detalleExistente = pedido.findeDetallePedidoByProducto(producto);
+        if (detalleExistente != null) {
+            cantidadTotalEnPedido += detalleExistente.getCantidad();
         }
-
-        pedido.addDetallePedido(cantidad, 0.0, producto);
-        producto.setStock(producto.getStock() - cantidad);
+        
+        if (producto.getStock() < cantidadTotalEnPedido) {
+            throw new ValidacionException("Stock insuficiente para: " + producto.getNombre());
+        }
+        
+        if (detalleExistente != null) {
+            detalleExistente.setCantidad(cantidadTotalEnPedido);
+            pedido.calcularTotal();
+        } else {
+            pedido.addDetallePedido(cantidad, 0.0, producto);
+        }
     }
 
     public void confirmarYGuardarPedido(Pedido pedido) throws ValidacionException {
@@ -58,16 +66,16 @@ public class PedidoService {
         try {
             pedidoRepository.guardar(pedido);
 
-            pedido.getDetalles().forEach(detalle -> {
+            for (DetallePedido detalle : pedido.getDetalles()) {
                 try {
-                    productoService.actualizarStock(
+                    productoService.descontarStock(
                         detalle.getProducto().getId(),
-                        detalle.getProducto().getStock()
+                        detalle.getCantidad()
                     );
                 } catch (ValidacionException e) {
-                    System.err.println("No se pudo actualizar stock: " + e.getMessage());
+                    System.err.println("No se pudo descontar stock: " + e.getMessage());
                 }
-            });
+            }
 
         } catch (SQLException e) {
             throw new ValidacionException("Error al guardar el pedido: " + e.getMessage());

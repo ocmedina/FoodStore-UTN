@@ -24,8 +24,20 @@ public class UsuarioService {
             throw new ValidacionException("El mail no puede estar vacío.");
         }
         try {
-            if (usuarioRepository.existeMail(mail)) {
-                throw new ValidacionException("Ya existe un usuario con el mail: " + mail);
+            Usuario existente = usuarioRepository.findByMailCualquiera(mail);
+            if (existente != null) {
+                if (!existente.isEliminado()) {
+                    throw new ValidacionException("Ya existe un usuario con el mail: " + mail);
+                } else {
+                    usuarioRepository.reactivar(existente.getId(), nombre, apellido, celular, contrasena, rol);
+                    existente.setEliminado(false);
+                    existente.setNombre(nombre);
+                    existente.setApellido(apellido);
+                    existente.setCelular(celular);
+                    existente.setContraseña(contrasena);
+                    existente.setRol(rol);
+                    return existente;
+                }
             }
             Usuario nuevo = new Usuario(nombre, apellido, mail, celular, contrasena, rol);
             return usuarioRepository.guardar(nuevo);
