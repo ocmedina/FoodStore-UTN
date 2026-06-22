@@ -17,12 +17,12 @@ public class TestConnection {
 
             ResultSet rs = conn.createStatement().executeQuery("SELECT version()");
             if (rs.next()) {
-                System.out.println("✅ ¡CONECTADO! (" + elapsed + " ms)");
+                System.out.println("¡CONECTADO! (" + elapsed + " ms)");
                 System.out.println("   Versión: " + rs.getString(1));
             }
             conn.close();
         } catch (Exception e) {
-            System.out.println("❌ Error: " + e.getMessage());
+            System.out.println(" Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
