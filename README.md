@@ -95,7 +95,7 @@ src/
 
 * Java
 * JDBC
-* MySQL / MariaDB
+* PostgreSQl / NeonDB
 * Programación Orientada a Objetos (POO)
 * Patrón Repository
 * Arquitectura en Capas
